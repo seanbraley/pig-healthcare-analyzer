@@ -1,7 +1,8 @@
 -- Comment
 
 -- Load in file
--- A = LOAD 'NACRS_export3_cleaned.txt' USING PigStorage('|');
+A = LOAD 'NACRS_export3_cleaned.txt' USING PigStorage('|');
+/*
 A = LOAD 'NACRS_export3_cleaned.txt' USING PigStorage('|') AS (
     data_record_id:chararray,       -- Unique record id
     patient_id:chararray,           -- Unique patient id
@@ -30,7 +31,7 @@ A = LOAD 'NACRS_export3_cleaned.txt' USING PigStorage('|') AS (
     p4rcat_desc:chararray,          -- Admittance code + desc, {Admitted, Non adm, less urgent, ...}
     dt_start:chararray              -- datestamp, corresponds with fyear not cyear
 );
-
+*/
 
 -- Use to remove 'John/Jane Doe Cases, of which there are 50k'
 trimmed_dataset = FILTER A BY patient_id != 'LN638180BE';

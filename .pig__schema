@@ -1,0 +1,7 @@
+{"fields":[
+  {"name":"data_record_id", "type":55, "description":"Unique record id", "schema":null},
+  {"name":"patient_id", "type":55, "description":"Unique patient id", "schema":null},
+  {"name":"health_link", "type":55, "description":"Region", "schema":null},
+  {"name":"health_link_code", "type":55, "description":"Code for region", "schema":null}
+
+], "version":0, "sortKeys":[], "sortKeyOrders":[]}
