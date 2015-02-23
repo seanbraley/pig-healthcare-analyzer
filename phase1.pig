@@ -2,6 +2,9 @@
 
 -- Load in file
 A = LOAD 'NACRS_export3_cleaned.txt' USING PigStorage('|');
+
+-- A = LOAD 'NACRS_export3_cleaned.txt' USING PigStorage('|', '-schema);
+
 /*
 A = LOAD 'NACRS_export3_cleaned.txt' USING PigStorage('|') AS (
     data_record_id:chararray,       -- Unique record id
