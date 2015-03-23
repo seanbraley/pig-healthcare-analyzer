@@ -6,7 +6,7 @@
 -- A = LOAD 'NACRS_export3_cleaned.txt' USING PigStorage('|', '-schema);
 
 
-A = LOAD 'NACRS_export3_cleaned.txt' USING PigStorage('|') AS (
+input_data = LOAD 'NACRS_export3_cleaned.txt' USING PigStorage('|') AS (
     data_record_id:chararray,       -- Unique record id
     patient_id:chararray,           -- Unique patient id
     health_link:chararray,          -- Region
@@ -40,12 +40,20 @@ A = LOAD 'NACRS_export3_cleaned.txt' USING PigStorage('|') AS (
 -- trimmed_dataset = FILTER A BY patient_id != 'LN638180BE';
 
 -- Which disease has the longest average emerge-hours
-by_disease = GROUP A BY ctas;
 
-avg_times = FOREACH by_disease GENERATE
-    group as disease,
-    AVG(A.emgtime_hrs) as emerge_hours;
+-- Group data by CTAS Code
+by_admittance_reason = GROUP input_data BY ctas;
 
+-- Foreach reason get the average time
+avg_times = FOREACH by_admittance_reason GENERATE
+    group as reason,
+    AVG(input_data.emgtime_hrs) as emerge_hours;
+
+-- Order these times
 avg_times_ordered = ORDER avg_times BY $1 DESC;
-lim_50 = LIMIT avg_times_ordered 50;
-DUMP lim_50;
+
+-- Limit the output to the top 10
+lim_10 = LIMIT avg_times_ordered 10;
+
+-- Dump the output
+DUMP lim_10;
