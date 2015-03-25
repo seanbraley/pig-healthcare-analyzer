@@ -43,11 +43,11 @@ patients = GROUP trimmed_dataset BY patient_id;
 -- Get the number of visits each patient made
 patient_counts = FOREACH patients GENERATE
     group as patient_id,
-    COUNT(A);
+    COUNT(trimmed_dataset);
 
 -- Order the result
 patient_counts_ordered = ORDER patient_counts BY $1 DESC;
 
 -- Get the top 10 visitors
-top_10 = LIMIT patient_counts_ordered 50;
+top_10 = LIMIT patient_counts_ordered 10;
 DUMP top_10;

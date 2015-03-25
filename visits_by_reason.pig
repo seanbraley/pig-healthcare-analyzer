@@ -6,7 +6,7 @@
 -- A = LOAD 'NACRS_export3_cleaned.txt' USING PigStorage('|', '-schema);
 
 
-input_data = LOAD 'NACRS_export3_cleaned.txt' USING PigStorage('|') AS (
+A = LOAD 'NACRS_export3_cleaned.txt' USING PigStorage('|') AS (
     data_record_id:chararray,       -- Unique record id
     patient_id:chararray,           -- Unique patient id
     health_link:chararray,          -- Region
@@ -37,23 +37,17 @@ input_data = LOAD 'NACRS_export3_cleaned.txt' USING PigStorage('|') AS (
 
 
 -- Use to remove 'John/Jane Doe Cases, of which there are 50k'
--- trimmed_dataset = FILTER A BY patient_id != 'LN638180BE';
+trimmed_dataset = FILTER A BY patient_id != 'LN638180BE';
 
--- Which disease has the longest average emerge-hours
+patients = GROUP A BY icd10_mpdx_chapter;
+-- Get the number of visits each patient made
+patient_counts = FOREACH patients GENERATE
+    group as patient_id,
+    COUNT(A);
 
--- Group data by CTAS Code
-by_admittance_reason = GROUP input_data BY icd10_mpdx_chapter;
+-- Order the result
+patient_counts_ordered = ORDER patient_counts BY $1 DESC;
 
--- Foreach reason get the average time
-avg_times = FOREACH by_admittance_reason GENERATE
-    group as reason,
-    AVG(input_data.emgtime_hrs) as emerge_hours;
-
--- Order these times
-avg_times_ordered = ORDER avg_times BY $1 DESC;
-
--- Limit the output to the top 10
-lim_10 = LIMIT avg_times_ordered 10;
-
--- Dump the output
-DUMP lim_10;
+-- Get the top 10 visitors
+top_10 = LIMIT patient_counts_ordered 10;
+DUMP top_10;

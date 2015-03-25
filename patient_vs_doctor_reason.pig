@@ -44,9 +44,14 @@ trimmed_dataset = FILTER A BY icd10_mpdx_chapter IS NOT null;
 
 data = ORDER trimmed_dataset BY patient_id DESC;
 
-data_out = FOREACH data GENERATE patient_id, icd10_mpdx_chapter, ldcause_ishmt;
+data_out = FOREACH data GENERATE patient_id, icd10_mpdx_chapter, (icd10_mpdx_chapter==ldcause_ishmt?1:0);
+--icd10_mpdx_chapter, ldcause_ishmt;
+count = FOREACH data_out GENERATE
+    icd10_mpdx_chapter,
+    COUNT($3);
 
-data_sorted = ORDER data_out BY $1, $2;
+data_sorted = ORDER count BY $2;
+
 
 top_10 = LIMIT data_sorted 10;
 
